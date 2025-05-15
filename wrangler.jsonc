@@ -1,0 +1,34 @@
+/**
+ * For more details on how to configure Wrangler, refer to:
+ * https://developers.cloudflare.com/workers/wrangler/configuration/
+ */
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "ticket-price-insights-scraper",
+	"main": "src/index.ts",
+	"compatibility_date": "2025-05-15",
+	"observability": {
+		"enabled": true
+	},
+	"triggers": {
+		"crons": [
+			"* * * * *"
+		]
+	},
+	"routes": [
+		{
+			"pattern": "www.ticketpriceinsights.com",
+			"custom_domain": true
+		}
+	],
+	"env": {
+		"staging": {
+			"routes": [
+				{
+					"pattern": "staging.ticketpriceinsights.com",
+					"custom_domain": true
+				}
+			]
+		}
+	}
+}
