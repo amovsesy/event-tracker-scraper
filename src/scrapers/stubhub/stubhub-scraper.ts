@@ -41,10 +41,13 @@ export class StubhubScraper extends BaseScraper {
 				typeof stateObj === 'object' && !Array.isArray(stateObj) && stateObj !== null ? stateObj.usps : indexData.venueStateProvinceName; // Fallback to the original state name
 
 			// Convert availableTicketClassPairs object to array of objects with id and name properties
-			const sections: SectionInfo[] = Object.entries(indexData.grid.availableTicketClassPairs).map(([id, name]) => ({
-				id,
-				name: name as string,
-			}));
+			// Handle the case where indexData.grid.availableTicketClassPairs could be undefined
+			const sections: SectionInfo[] = indexData.grid?.availableTicketClassPairs
+				? Object.entries(indexData.grid.availableTicketClassPairs).map(([id, name]) => ({
+						id,
+						name: name as string,
+					}))
+				: [];
 
 			return {
 				title: indexData.eventName,
