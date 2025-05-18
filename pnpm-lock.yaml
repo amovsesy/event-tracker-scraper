@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      us-state-converter:
+        specifier: ^1.0.8
+        version: 1.0.8
     devDependencies:
       '@eslint/compat':
         specifier: ^1.2.9
@@ -1357,6 +1361,9 @@ packages:
 
   uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
+
+  us-state-converter@1.0.8:
+    resolution: {integrity: sha512-GJJKcm1d55WtGFklT//SqmYNOTXJOanaUWylY0avxMZsolCWCUY8+3BK1Ur46Bs77hJMKrVwAww1aSWNt8L+AA==}
 
   vary@1.1.2:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
@@ -2710,6 +2717,8 @@ snapshots:
   uri-js@4.4.1:
     dependencies:
       punycode: 2.3.1
+
+  us-state-converter@1.0.8: {}
 
   vary@1.1.2: {}
 

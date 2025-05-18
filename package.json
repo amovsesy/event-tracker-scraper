@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"deploy": "wrangler deploy",
-		"dev": "wrangler dev --test-scheduled",
+		"dev": "wrangler dev --test-scheduled --port 8009",
 		"start": "wrangler dev --test-scheduled",
 		"cf-typegen": "wrangler types",
 		"format": "prettier --write .",
@@ -32,5 +32,8 @@
 		"!(*.{js,ts,svelte})": [
 			"prettier --write --ignore-unknown"
 		]
+	},
+	"dependencies": {
+		"us-state-converter": "^1.0.8"
 	}
 }
