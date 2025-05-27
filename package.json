@@ -4,8 +4,7 @@
 	"private": true,
 	"scripts": {
 		"deploy": "wrangler deploy",
-		"dev": "wrangler dev --test-scheduled --port 8009",
-		"start": "wrangler dev --test-scheduled",
+		"dev": "wrangler dev --test-scheduled --port 8009 --persist-to ../event-tracker/.wrangler/state",
 		"cf-typegen": "wrangler types",
 		"format": "prettier --write .",
 		"lint": "prettier --check . && eslint .",

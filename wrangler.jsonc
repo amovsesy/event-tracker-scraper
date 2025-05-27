@@ -6,7 +6,7 @@
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "ticket-price-insights-scraper",
 	"main": "src/index.ts",
-	"compatibility_date": "2025-05-15",
+	"compatibility_date": "2025-05-08",
 	"observability": {
 		"enabled": true
 	},

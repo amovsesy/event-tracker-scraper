@@ -31,16 +31,19 @@ export default {
 
 		// Handle scraper requests
 		if (url.pathname === '/scrape') {
-			const targetUrl = url.searchParams.get('url');
+			const eventID = url.searchParams.get('id');
 			const action = url.searchParams.get('action');
 
 			// Validate required parameters
-			if (!targetUrl) {
-				return new Response(JSON.stringify({ error: 'Missing required parameters: url' }), {
+			if (!eventID) {
+				return new Response(JSON.stringify({ error: 'Missing required parameters: id' }), {
 					status: 400,
 					headers: { 'Content-Type': 'application/json' },
 				});
 			}
+
+			// TODO: get event info from DB
+			const targetUrl = 'https://www.stubhub.com/concacaf-gold-cup-arlington-tickets-6-22-2025/event/157944188/';
 
 			try {
 				// Create the appropriate scraper based on the url
@@ -52,12 +55,11 @@ export default {
 					case 'info':
 						result = await scraper.getEventInfo();
 						break;
-					case 'sections':
-						result = await scraper.getSections();
-						break;
 					default:
-						result = await scraper.scrape();
-						break;
+						return new Response(JSON.stringify({ error: 'Unsupported action' }), {
+							status: 400,
+							headers: { 'Content-Type': 'application/json' },
+						});
 				}
 
 				return new Response(JSON.stringify(result), {
