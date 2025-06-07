@@ -6,10 +6,22 @@
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "ticket-price-insights-scraper",
 	"main": "src/index.ts",
-	"compatibility_date": "2025-05-15",
+	"compatibility_date": "2025-05-08",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
 	"observability": {
 		"enabled": true
 	},
+	"account_id": "fe7172c3d5519c9f0b8bc6f27909bfd0",
+	"d1_databases": [
+		{
+			"migrations_dir": "./drizzle",
+			"binding": "DB",
+			"database_name": "ticket-price-insights",
+			"database_id": "9a18959a-0463-4ab6-be69-7b3a30fede10"
+		}
+	],
 	"triggers": {
 		"crons": [
 			"* * * * *"
@@ -27,6 +39,16 @@
 				{
 					"pattern": "staging.ticketpriceinsights.com",
 					"custom_domain": true
+				}
+			]
+		},
+		"dev": {
+			"d1_databases": [
+				{
+					"migrations_dir": "./drizzle",
+					"binding": "DB",
+					"database_name": "ticket-price-insights",
+					"database_id": ""
 				}
 			]
 		}

@@ -16,9 +16,13 @@
  */
 
 import { ScraperFactory } from './scrapers/scraper-factory';
+import { drizzle } from 'drizzle-orm/d1';
+import { eq } from 'drizzle-orm';
+import { event } from './lib/server/db/schema';
 
 export default {
-	async fetch(req) {
+	async fetch(req, env) {
+		const db = drizzle(env.DB);
 		const url = new URL(req.url);
 
 		// Check if this is a scheduled test request
@@ -31,16 +35,34 @@ export default {
 
 		// Handle scraper requests
 		if (url.pathname === '/scrape') {
-			const targetUrl = url.searchParams.get('url');
+			const eventID = url.searchParams.get('id');
 			const action = url.searchParams.get('action');
+			const forceRefresh = url.searchParams.get('refresh') === 'true';
 
 			// Validate required parameters
-			if (!targetUrl) {
-				return new Response(JSON.stringify({ error: 'Missing required parameters: url' }), {
+			if (!eventID) {
+				return new Response(JSON.stringify({ error: 'Missing required parameters: id' }), {
 					status: 400,
 					headers: { 'Content-Type': 'application/json' },
 				});
 			}
+
+			// Get event info from DB
+			const eventData = await db
+				.select()
+				.from(event)
+				.where(eq(event.id, parseInt(eventID)))
+				.get();
+
+			// Return 400 if event not found
+			if (!eventData) {
+				return new Response(JSON.stringify({ error: 'Event not found' }), {
+					status: 400,
+					headers: { 'Content-Type': 'application/json' },
+				});
+			}
+
+			const targetUrl = eventData.url;
 
 			try {
 				// Create the appropriate scraper based on the url
@@ -50,15 +72,25 @@ export default {
 				// Execute the requested action
 				switch (action) {
 					case 'info':
-						result = await scraper.getEventInfo();
-						break;
-					case 'sections':
-						result = await scraper.getSections();
+						result = eventData.data && !forceRefresh ? JSON.parse(eventData.data) : await scraper.getEventInfo();
 						break;
 					default:
-						result = await scraper.scrape();
-						break;
+						return new Response(JSON.stringify({ error: 'Unsupported action' }), {
+							status: 400,
+							headers: { 'Content-Type': 'application/json' },
+						});
 				}
+
+				// Update the event data in the database
+				const currentDate = new Date().toISOString();
+				await db
+					.update(event)
+					.set({
+						data: JSON.stringify(result),
+						updatedAt: currentDate,
+					})
+					.where(eq(event.id, parseInt(eventID)))
+					.run();
 
 				return new Response(JSON.stringify(result), {
 					headers: { 'Content-Type': 'application/json' },
