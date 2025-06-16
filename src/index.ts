@@ -19,6 +19,7 @@ import { ScraperFactory } from './scrapers/scraper-factory';
 import { drizzle } from 'drizzle-orm/d1';
 import { eq } from 'drizzle-orm';
 import { event } from './lib/server/db/schema';
+import { formatInTimeZone } from 'date-fns-tz';
 
 export default {
 	async fetch(req, env) {
@@ -83,11 +84,93 @@ export default {
 
 				// Update the event data in the database
 				const currentDate = new Date().toISOString();
+
+				// Get the location from the result and determine timezone
+				const locationParts = result.location ? result.location.split(', ') : [];
+				const state = locationParts[1] || '';
+
+				// Map location to timezone - this is a simple mapping for common US cities/states
+				// For a production app, consider using a more comprehensive timezone database
+				const getTimezoneFromLocation = (state: string): string => {
+					// Simple mapping of states to timezones
+					const stateToTimezone: Record<string, string> = {
+						AL: 'America/Chicago',
+						AK: 'America/Anchorage',
+						AZ: 'America/Phoenix',
+						AR: 'America/Chicago',
+						CA: 'America/Los_Angeles',
+						CO: 'America/Denver',
+						CT: 'America/New_York',
+						DE: 'America/New_York',
+						FL: 'America/New_York',
+						GA: 'America/New_York',
+						HI: 'Pacific/Honolulu',
+						ID: 'America/Denver',
+						IL: 'America/Chicago',
+						IN: 'America/New_York',
+						IA: 'America/Chicago',
+						KS: 'America/Chicago',
+						KY: 'America/New_York',
+						LA: 'America/Chicago',
+						ME: 'America/New_York',
+						MD: 'America/New_York',
+						MA: 'America/New_York',
+						MI: 'America/New_York',
+						MN: 'America/Chicago',
+						MS: 'America/Chicago',
+						MO: 'America/Chicago',
+						MT: 'America/Denver',
+						NE: 'America/Chicago',
+						NV: 'America/Los_Angeles',
+						NH: 'America/New_York',
+						NJ: 'America/New_York',
+						NM: 'America/Denver',
+						NY: 'America/New_York',
+						NC: 'America/New_York',
+						ND: 'America/Chicago',
+						OH: 'America/New_York',
+						OK: 'America/Chicago',
+						OR: 'America/Los_Angeles',
+						PA: 'America/New_York',
+						RI: 'America/New_York',
+						SC: 'America/New_York',
+						SD: 'America/Chicago',
+						TN: 'America/Chicago',
+						TX: 'America/Chicago',
+						UT: 'America/Denver',
+						VT: 'America/New_York',
+						VA: 'America/New_York',
+						WA: 'America/Los_Angeles',
+						WV: 'America/New_York',
+						WI: 'America/Chicago',
+						WY: 'America/Denver',
+					};
+
+					return stateToTimezone[state] || 'UTC';
+				};
+
+				// Get timezone for the event location
+				const timezone = getTimezoneFromLocation(state);
+
+				// Parse the date string and convert to ISO in the event's timezone
+				let eventDateIso: string | null = null;
+				if (result.date) {
+					try {
+						// Parse the date in the format "Sat Sep 27 2025 7:00 PM"
+						const dateObj = new Date(result.date);
+						// Format in the event's timezone and convert to ISO
+						eventDateIso = formatInTimeZone(dateObj, timezone, "yyyy-MM-dd'T'HH:mm:ssXXX");
+					} catch (error) {
+						console.error('Error parsing event date:', error);
+					}
+				}
+
 				await db
 					.update(event)
 					.set({
 						data: JSON.stringify(result),
 						updatedAt: currentDate,
+						eventDate: eventDateIso,
 					})
 					.where(eq(event.id, parseInt(eventID)))
 					.run();
