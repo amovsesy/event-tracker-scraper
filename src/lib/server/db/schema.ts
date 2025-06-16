@@ -12,7 +12,7 @@ export const user = sqliteTable(
 		updatedAt: text('updated_at').notNull(),
 		deletedAt: text('deleted_at'),
 	},
-	(table) => [index('external_id_idx').on(table.loginExternalId), index('email_idx').on(table.email)],
+	(table) => [index('user_external_id_idx').on(table.loginExternalId), index('user_email_idx').on(table.email)],
 );
 
 export const event = sqliteTable(
@@ -25,7 +25,7 @@ export const event = sqliteTable(
 		createdAt: text('created_at').notNull(),
 		updatedAt: text('updated_at').notNull(),
 	},
-	(table) => [index('url_idx').on(table.url)],
+	(table) => [index('event_url_idx').on(table.url)],
 );
 
 export const trackedEvent = sqliteTable(
@@ -41,7 +41,7 @@ export const trackedEvent = sqliteTable(
 		createdAt: text('created_at').notNull(),
 		updatedAt: text('updated_at').notNull(),
 	},
-	(table) => [index('event_id_idx').on(table.eventId), index('user_id_idx').on(table.userId)],
+	(table) => [index('tracked_event_event_id_idx').on(table.eventId), index('tracked_event_user_id_idx').on(table.userId)],
 );
 
 export const trackedEventPrice = sqliteTable(
