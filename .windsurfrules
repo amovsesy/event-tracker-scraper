@@ -1,0 +1,50 @@
+{
+  "rules": {
+    "typescript": {
+      "noUnusedVars": "error",
+      "noImplicitAny": "error",
+      "strictNullChecks": "error",
+      "noUncheckedIndexedAccess": "error",
+      "noImplicitReturns": "error"
+    },
+    "imports": {
+      "preferNamed": true,
+      "sortImports": true,
+      "noDefaultExport": true
+    },
+    "cloudflare": {
+      "validateBindings": true,
+      "enforceErrorHandling": true,
+      "maxWorkerSize": "1MB"
+    },
+    "formatting": {
+      "preferSingleQuotes": true,
+      "trailingComma": "all",
+      "tabWidth": 2,
+      "printWidth": 200,
+      "semi": true
+    },
+    "database": {
+      "validateDrizzleSchema": true,
+      "enforceTypeSafety": true,
+      "requireTransactions": true
+    },
+    "security": {
+      "noHardcodedSecrets": "error",
+      "validateCorsConfig": "error"
+    },
+    "performance": {
+      "optimizeNetworkRequests": true,
+      "avoidUnnecessaryRecomputation": true
+    },
+    "conventions": {
+      "fileNamingConvention": "kebab-case",
+      "classNamingConvention": "PascalCase",
+      "interfaceNamingConvention": "PascalCase",
+      "typeNamingConvention": "PascalCase",
+      "functionNamingConvention": "camelCase",
+      "variableNamingConvention": "camelCase",
+      "constantNamingConvention": "UPPER_CASE"
+    }
+  }
+}
